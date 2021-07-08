@@ -203,9 +203,9 @@ describe('writeBenchmark()', function() {
             name: 'Test benchmark',
             outputFilePath: 'dummy', // Should not affect
             ghBranch: 'dummy', // Should not affect
-            ghRepository: 'dummy',
+            ghRepository: undefined,
             benchmarkDataDirPath: 'dummy', // Should not affect
-            githubToken: 'dummy',
+            githubToken: undefined,
             autoPush: false,
             autoPushFilter: '',
             commentAlways: false,
@@ -428,7 +428,7 @@ describe('writeBenchmark()', function() {
             name: 'Test benchmark',
             outputFilePath: 'dummy', // Should not affect
             ghBranch: 'gh-pages',
-            ghRepository: 'dummy repo',
+            ghRepository: undefined,
             benchmarkDataDirPath: 'data-dir', // Should not affect
             githubToken: 'dummy token',
             autoPush: true,
@@ -455,16 +455,17 @@ describe('writeBenchmark()', function() {
         ): [GitFunc, unknown[]][] {
             const dir = cfg.dir ?? 'data-dir';
             const token = 'token' in cfg ? cfg.token : 'dummy token';
-            const repository = 'repository' in cfg ? cfg.repository : 'dummy repo';
+            const repository = 'repository' in cfg ? cfg.repository : undefined;
             const autoPush = cfg.autoPush ?? true;
-            const hist: Array<[GitFunc, unknown[]] | undefined> = [
-                ['clone', [token, repository]],
-                ['pull', [token, repository]],
-                ['checkout', ['gh-pages']],
-                ['add', [dir]],
-                ['commit', ['add Test benchmark google benchmark result for current commit id']],
-                autoPush ? ['push', [token, repository]] : undefined,
-            ];
+            const hist: Array<[GitFunc, unknown[]] | undefined> = []
+            if (repository) {
+                hist.push(['clone', [token, repository]]);
+                hist.push(['pull', [token, repository]]);
+            }
+            hist.push(['checkout', ['gh-pages']]);
+            hist.push(['add', [dir]]);
+            hist.push(['commit', ['Add Test benchmark google benchmark result for current commit id']]);
+            autoPush ? hist.push(['push', [token, undefined]]) : undefined
             return hist.filter((x: [GitFunc, unknown[]] | undefined): x is [GitFunc, unknown[]] => x !== undefined);
         }
 

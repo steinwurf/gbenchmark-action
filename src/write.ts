@@ -427,7 +427,6 @@ async function writeBenchmarkToGitHubWithRetry(
     const prevBench = addBenchmarkToDataJson(name, bench, data, maxItemsInChart);
 
     await storeDataJs(path.join(benchmarkDataDirPath, 'data.js'), data);
-
     await addIndexHtmlIfNeeded(benchmarkDataDirPath);
     await git.add(benchmarkDataDirPath, ...extraGitArguments);
     await git.commit(`Add ${name} google benchmark result for ${bench.commit.id}`, ...extraGitArguments);
