@@ -40,7 +40,7 @@ npm prune --production
 rm -rf .release
 mkdir -p .release
 
-cp action.yml src/*.js package.json package-lock.json .gitignore .release/
+cp action.yml src/*.js package.json package-lock.json .gitignore README.rst .release/
 
 git checkout "$version"
 git pull
@@ -51,6 +51,7 @@ mv .release/action.yml .
 mv .release/*.js ./src/
 mv .release/*.json .
 mv .release/.gitignore .
+mv .release/README.rst .
 git add action.yml ./src/*.js package.json package-lock.json .gitignore README.rst
 set +x
 
