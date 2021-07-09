@@ -51,7 +51,7 @@ mv .release/action.yml .
 mv .release/*.js ./src/
 mv .release/*.json .
 
-git add action.yml ./src/*.js package.json package-lock.json node_modules .gitignore README.rst
+git add action.yml ./src/*.js package.json package-lock.json .gitignore README.rst
 set +x
 
 echo "Done. Please check 'git diff --cached' to verify changes. If ok, add version tag and push it to remote"
