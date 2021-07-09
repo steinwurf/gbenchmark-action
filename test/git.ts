@@ -74,11 +74,7 @@ mock('@actions/exec', {
         }
     },
 });
-mock('@actions/core', {
-    debug: () => {
-        /* do nothing */
-    },
-});
+
 mock('@actions/github', {
     context: gitHubContext,
 });
