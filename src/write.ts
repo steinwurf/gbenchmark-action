@@ -403,7 +403,7 @@ async function writeBenchmarkToGitHubWithRetry(
     const benchmarkBaseDir: string = path.dirname(benchmarkDataDirPath);
     let extraGitArguments: string[] = [];
     if (ghRepository) {
-        extraGitArguments = ['--git-dir=' + benchmarkBaseDir +  '/.git', '--work-tree=' + benchmarkBaseDir];
+        extraGitArguments = ['--git-dir=' + benchmarkBaseDir + '/.git', '--work-tree=' + benchmarkBaseDir];
     } else {
         extraGitArguments = [];
     }

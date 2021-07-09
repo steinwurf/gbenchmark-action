@@ -149,9 +149,7 @@ export async function pull(
     }
 }
 
-export async function reset(
-    ...gitOptions: string[]
-): Promise<string> {
+export async function reset(...gitOptions: string[]): Promise<string> {
     core.debug(`Executing 'git pull' with token and git options '${gitOptions.join(' ')}'`);
 
     let args = ['reset', '--hard', 'HEAD~1'];

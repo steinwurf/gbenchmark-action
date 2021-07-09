@@ -75,7 +75,6 @@ describe('extractResult()', function() {
         await A.rejects(extractResult(config));
     });
 
-
     const toolSpecificErrorCases: Array<{
         it: string;
         file: string;
