@@ -15,8 +15,18 @@
     "coverage": "nyc --reporter=lcov --reporter=text npm run mocha",
     "cov": "nyc --reporter=lcov --reporter=text-summary npm run mocha && open ./coverage/lcov-report/index.html"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steinwurf/gbenchmark-action.git"
+  },
+  "keywords": [
+    "github",
+    "action",
+    "benchmark"
+  ],
   "author": "Mikkel Højlund Larsen",
   "license": "",
+  "homepage": "https://github.com/steinwurf/gbenchmark-action#readme",
   "dependencies": {
     "@actions/core": "^1.2.3",
     "@actions/exec": "^1.0.3",
