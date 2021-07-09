@@ -68,28 +68,13 @@ describe('extractResult()', function() {
         });
     }
 
-    it('raises an error on unexpected tool', async function() {
-        const config = {
-            tool: 'foo',
-            outputFilePath: path.join(__dirname, 'data', 'extract', 'go_output.txt'),
-        };
-        await A.rejects(extractResult(config), /^Error: FATAL: Unexpected tool: 'foo'$/);
-    });
-
     it('raises an error when output file is not readable', async function() {
         const config = {
-            tool: 'go',
             outputFilePath: 'path/does/not/exist.txt',
         };
         await A.rejects(extractResult(config));
     });
 
-    it('raises an error when no output found', async function() {
-        const config = {
-            outputFilePath: path.join(__dirname, 'data', 'extract', 'go_output.txt'),
-        };
-        await A.rejects(extractResult(config), /^Error: No benchmark result was found in /);
-    });
 
     const toolSpecificErrorCases: Array<{
         it: string;
@@ -99,7 +84,7 @@ describe('extractResult()', function() {
         ...(['googlecpp'] as const).map(tool => ({
             it: `raises an error when output file is not in JSON with google benchmark`,
             tool,
-            file: 'googlecpp_output.txt',
+            file: 'non_json.txt',
             expected: /must be JSON file/,
         })),
     ];
@@ -129,9 +114,8 @@ describe('extractResult()', function() {
                 },
             },
         };
-        const outputFilePath = path.join(__dirname, 'data', 'extract', 'go_output.txt');
+        const outputFilePath = path.join(__dirname, 'data', 'extract', 'googlecpp_output.txt');
         const config = {
-            tool: 'go',
             outputFilePath,
         };
         const { commit } = await extractResult(config);
@@ -149,9 +133,8 @@ describe('extractResult()', function() {
 
     it('raises an error when commit information is not found in webhook payload', async function() {
         dummyGitHubContext.payload = {};
-        const outputFilePath = path.join(__dirname, 'data', 'extract', 'go_output.txt');
+        const outputFilePath = path.join(__dirname, 'data', 'extract', 'googlecpp_output.txt');
         const config = {
-            tool: 'go',
             outputFilePath,
         };
         await A.rejects(extractResult(config), /^Error: No commit information is found in payload/);

@@ -52,8 +52,6 @@ async function addIndexHtmlIfNeeded(dir: string) {
     }
 
     await fs.writeFile(indexHtml, DEFAULT_INDEX_HTML, 'utf8');
-    await git.cmd('add', indexHtml);
-    console.log('Created default index.html at', indexHtml);
 }
 
 function biggerIsBetter(): boolean {
@@ -405,7 +403,7 @@ async function writeBenchmarkToGitHubWithRetry(
     const benchmarkBaseDir: string = path.dirname(benchmarkDataDirPath);
     let extraGitArguments: string[] = [];
     if (ghRepository) {
-        extraGitArguments = ['--git-dir=' + benchmarkBaseDir + '/.git', '--work-tree=' + benchmarkBaseDir];
+        extraGitArguments = ['--git-dir=' + benchmarkBaseDir +  '/.git', '--work-tree=' + benchmarkBaseDir];
     } else {
         extraGitArguments = [];
     }
@@ -446,7 +444,7 @@ async function writeBenchmarkToGitHubWithRetry(
 
             if (retry > 0) {
                 core.debug('Rollback the auto-generated commit before retry');
-                await git.cmd(...extraGitArguments, 'reset', '--hard', 'HEAD~1');
+                await git.reset(...extraGitArguments);
 
                 core.warning(
                     `Retrying to generate a commit and push to remote ${ghBranch} with retry count ${retry}...`,

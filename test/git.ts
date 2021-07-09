@@ -39,10 +39,22 @@ const gitHubContext = {
         repository: {
             full_name: 'user/repo',
         },
+        path: {
+            full_path: '/this/is/a/path',
+        },
+        branch: {
+            full_name: 'my-branch',
+        },
     },
 } as {
     payload: {
         repository: {
+            full_name: string;
+        } | null;
+        path: {
+            full_path: string;
+        } | null;
+        branch: {
             full_name: string;
         } | null;
     };
@@ -71,7 +83,7 @@ mock('@actions/github', {
     context: gitHubContext,
 });
 
-const { cmd, add, checkout,  commit, push, pull, clone, currentBranch } = require('../src/git');
+const { cmd, add, checkout,  commit, push, pull, reset, clone, currentBranch } = require('../src/git');
 const ok: (x: any) => asserts x = A.ok;
 const userArgs = [
     '-c',
@@ -127,26 +139,17 @@ describe('git', function() {
 
     describe('add()', function() {
         afterEach(function() {
-            gitHubContext.payload.repository = { full_name: 'user/repo' };
+            gitHubContext.payload.path = { full_path: '/path/to/dir' };
         });
 
         it('runs `git add` with given path and options', async function() {
-            const stdout = await add('my-path', 'opt1', 'opt2');
+            const stdout = await add('/path/to/dir', 'opt1', 'opt2');
             const args = fakedExec.lastArgs;
 
             eq(stdout, 'this is test');
             ok(args);
             eq(args[0], 'git');
-            eq(args[1], userArgs.concat(['opt1', 'opt2', 'add', 'my-path']));
-        });
-
-        it('raises an error when repository info is not included in payload', async function() {
-            gitHubContext.payload.repository = null;
-            await A.rejects(
-                () => add('my-path', 'opt1', 'opt2'),
-                /^Error: Repository info is not available in payload/,
-            );
-            eq(fakedExec.lastArgs, null);
+            eq(args[1], userArgs.concat(['opt1', 'opt2', 'add', '/path/to/dir']));
         });
     });
 
@@ -197,15 +200,6 @@ describe('git', function() {
             eq(args[0], 'git');
             eq(args[1], userArgs.concat(['opt1', 'opt2', 'checkout', 'my-branch']));
         });
-
-        it('raises an error when repository info is not included in payload', async function() {
-            gitHubContext.payload.repository = null;
-            await A.rejects(
-                () => checkout('my-branch', 'opt1', 'opt2'),
-                /^Error: Repository info is not available in payload/,
-            );
-            eq(fakedExec.lastArgs, null);
-        });
     });
 
     describe('commit()', function() {
@@ -222,15 +216,6 @@ describe('git', function() {
             eq(args[0], 'git');
             eq(args[1], userArgs.concat(['opt1', 'opt2', 'commit', '-m', 'my-message']));
         });
-
-        it('raises an error when repository info is not included in payload', async function() {
-            gitHubContext.payload.repository = null;
-            await A.rejects(
-                () => commit('my-message', 'opt1', 'opt2'),
-                /^Error: Repository info is not available in payload/,
-            );
-            eq(fakedExec.lastArgs, null);
-        });
     });
 
     describe('currentBranch()', function() {
@@ -246,12 +231,6 @@ describe('git', function() {
             ok(args);
             eq(args[0], 'git');
             eq(args[1], userArgs.concat(['opt1', 'opt2', 'rev-parse', '--abbrev-ref', 'HEAD']));
-        });
-
-        it('raises an error when repository info is not included in payload', async function() {
-            gitHubContext.payload.repository = null;
-            await A.rejects(() => currentBranch('opt1', 'opt2'), /^Error: Repository info is not available in payload/);
-            eq(fakedExec.lastArgs, null);
         });
     });
 
@@ -279,44 +258,6 @@ describe('git', function() {
             );
         });
 
-        it('runs `git push` with given repository and options without token', async function() {
-            const stdout = await push(undefined, gitHubContext.payload.repository?.full_name, 'opt1', 'opt2');
-            const args = fakedExec.lastArgs;
-
-            eq(stdout, 'this is test');
-            ok(args);
-            eq(args[0], 'git');
-            eq(args[1], userArgs.concat(['opt1', 'opt2', 'push', '--no-verify']));
-        });
-
-        it('runs `git push` without given repository and with options and token', async function() {
-            const stdout = await push('this-is-token', undefined, 'opt1', 'opt2');
-            const args = fakedExec.lastArgs;
-
-            eq(stdout, 'this is test');
-            ok(args);
-            eq(args[0], 'git');
-            eq(args[1], userArgs.concat(['opt1', 'opt2', 'push', '--no-verify']));
-        });
-
-        it('runs `git push` without given repository and token and with options', async function() {
-            const stdout = await push(undefined, undefined, 'opt1', 'opt2');
-            const args = fakedExec.lastArgs;
-
-            eq(stdout, 'this is test');
-            ok(args);
-            eq(args[0], 'git');
-            eq(args[1], userArgs.concat(['opt1', 'opt2', 'push', '--no-verify']));
-        });
-
-        it('raises an error when repository info is not included in payload', async function() {
-            gitHubContext.payload.repository = null;
-            await A.rejects(
-                () => push('this-is-token', 'user/my-repository', 'opt1', 'opt2'),
-                /^Error: Repository info is not available in payload/,
-            );
-            eq(fakedExec.lastArgs, null);
-        });
     });
 
     describe('pull()', function() {
@@ -341,44 +282,30 @@ describe('git', function() {
                 ]),
             );
         });
+    });
 
-        it('runs `git pull` with given repository and options without token', async function() {
-            const stdout = await pull(undefined, 'user/my-repository', 'opt1', 'opt2');
+    describe('reset()', function() {
+        afterEach(function() {
+            gitHubContext.payload.repository = { full_name: 'user/repo' };
+        });
+
+        it('runs `git reset` with given ptions', async function() {
+            const stdout = await reset('opt1', 'opt2');
             const args = fakedExec.lastArgs;
 
             eq(stdout, 'this is test');
             ok(args);
             eq(args[0], 'git');
-            eq(args[1], userArgs.concat(['opt1', 'opt2', 'pull']));
-        });
-
-        it('runs `git pull` without given repository and with options and token', async function() {
-            const stdout = await pull('this-is-token', undefined, 'opt1', 'opt2');
-            const args = fakedExec.lastArgs;
-
-            eq(stdout, 'this is test');
-            ok(args);
-            eq(args[0], 'git');
-            eq(args[1], userArgs.concat(['opt1', 'opt2', 'pull']));
-        });
-
-        it('runs `git pull` with options but without given repository and token', async function() {
-            const stdout = await pull(undefined, undefined, 'opt1', 'opt2');
-            const args = fakedExec.lastArgs;
-
-            eq(stdout, 'this is test');
-            ok(args);
-            eq(args[0], 'git');
-            eq(args[1], userArgs.concat(['opt1', 'opt2', 'pull']));
-        });
-
-        it('raises an error when repository info is not included in payload', async function() {
-            gitHubContext.payload.repository = null;
-            await A.rejects(
-                () => pull('this-is-token', 'user/my-repository', 'opt1', 'opt2'),
-                /^Error: Repository info is not available in payload/,
+            eq(
+                args[1],
+                userArgs.concat([
+                    'opt1',
+                    'opt2',
+                    'reset',
+                    '--hard',
+                    'HEAD~1'
+                ]),
             );
-            eq(fakedExec.lastArgs, null);
         });
     });
 });

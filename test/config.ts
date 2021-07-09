@@ -174,6 +174,7 @@ describe('configFromJobInput()', function() {
         ghBranch: string;
         ghRepository: string | undefined;
         githubToken: string | undefined;
+        benchmarkDataDirPath: string;
         outputFilePath: string;
         autoPush: boolean;
         autoPushFilter: string;
@@ -190,6 +191,7 @@ describe('configFromJobInput()', function() {
         name: 'Benchmark',
         ghBranch: 'gh-pages',
         ghRepository: undefined,
+        benchmarkDataDirPath: '.',
         outputFilePath: 'out.txt',
         autoPush: false,
         autoPushFilter: '',
@@ -204,17 +206,6 @@ describe('configFromJobInput()', function() {
     };
 
     const returnedConfigTests = [
-        ...([
-            ['auto-push', 'autoPush'],
-            ['comment-on-alert', 'commentOnAlert'],
-            ['fail-on-alert', 'failOnAlert'],
-        ] as const).map(([name, prop]) =>
-            ['true', 'false'].map(v => ({
-                what: `boolean input ${name} set to '${v}'`,
-                inputs: { ...defaultInputs, 'github-token': 'dummy', [name]: v },
-                expected: { ...defaultExpected, githubToken: 'dummy', [prop]: v === 'true' },
-            })),
-        ).flat(),
         {
             what: 'with specified name',
             inputs: { ...defaultInputs, name: 'My Name is...' },
@@ -311,7 +302,6 @@ describe('configFromJobInput()', function() {
 
         const config = await configFromJobInput();
         A.equal(config.name, 'Benchmark');
-        A.equal(config.tool, 'cargo');
         A.ok(path.isAbsolute(config.outputFilePath), config.outputFilePath);
         A.ok(config.outputFilePath.endsWith('out.txt'), config.outputFilePath);
         A.ok(path.isAbsolute(config.benchmarkDataDirPath), config.benchmarkDataDirPath);
