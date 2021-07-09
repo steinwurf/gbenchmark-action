@@ -41,7 +41,6 @@ rm -rf .release
 mkdir -p .release
 
 cp action.yml src/*.js package.json package-lock.json .release/
-cp -R node_modules .release/node_modules
 
 git checkout "$version"
 git pull
@@ -52,7 +51,6 @@ mkdir -p src
 mv .release/action.yml .
 mv .release/*.js ./src/
 mv .release/*.json .
-mv .release/node_modules .
 
 git add action.yml ./src/*.js package.json package-lock.json node_modules .gitignore README.rst
 set +x
