@@ -83,7 +83,7 @@ mock('@actions/github', {
     context: gitHubContext,
 });
 
-const { cmd, add, checkout,  commit, push, pull, reset, clone, currentBranch } = require('../src/git');
+const { cmd, add, checkout, commit, push, pull, reset, clone, currentBranch } = require('../src/git');
 const ok: (x: any) => asserts x = A.ok;
 const userArgs = [
     '-c',
@@ -257,7 +257,6 @@ describe('git', function() {
                 ]),
             );
         });
-
     });
 
     describe('pull()', function() {
@@ -296,16 +295,7 @@ describe('git', function() {
             eq(stdout, 'this is test');
             ok(args);
             eq(args[0], 'git');
-            eq(
-                args[1],
-                userArgs.concat([
-                    'opt1',
-                    'opt2',
-                    'reset',
-                    '--hard',
-                    'HEAD~1'
-                ]),
-            );
+            eq(args[1], userArgs.concat(['opt1', 'opt2', 'reset', '--hard', 'HEAD~1']));
         });
     });
 });

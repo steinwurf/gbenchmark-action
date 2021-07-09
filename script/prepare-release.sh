@@ -35,7 +35,6 @@ echo "Releasing to $version branch..."
 set -x
 npm install
 npm run build
-npm run lint
 npm prune --production
 
 rm -rf .release

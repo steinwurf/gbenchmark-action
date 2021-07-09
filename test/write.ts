@@ -468,7 +468,7 @@ describe('writeBenchmark()', function() {
                 ['add', [dir, extraArgs[0], extraArgs[1]]],
                 ['commit', ['add Test benchmark google benchmark result for current commit id'].concat(extraArgs)],
                 autoPush ? ['push', [token, repository, extraArgs[0], extraArgs[1]]] : undefined,
-                autoPush ? ['reset', [extraArgs[0], extraArgs[1]]] : undefined
+                autoPush ? ['reset', [extraArgs[0], extraArgs[1]]] : undefined,
             ];
             return hist.filter((x: [GitFunc, unknown[]] | undefined): x is [GitFunc, unknown[]] => x !== undefined);
         }
