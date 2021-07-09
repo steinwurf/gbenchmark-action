@@ -671,5 +671,76 @@ describe('writeBenchmark()', function() {
                 }
             });
         }
+
+        const maxRetries = 10;
+        const retryCases: Array<{
+            it: string;
+            error?: RegExp;
+            pushErrorMessage: string;
+            pushErrorCount: number;
+        }> = [
+            ...[1, 2].map(retries => ({
+                it: `updates data successfully after ${retries} retries`,
+                pushErrorMessage: '... [remote rejected] ...',
+                pushErrorCount: retries,
+            })),
+            {
+                it: `gives up updating data after ${maxRetries} retries with an error`,
+                pushErrorMessage: '... [remote rejected] ...',
+                pushErrorCount: maxRetries,
+                error: /Auto-push failed 3 times since the remote branch gh-pages rejected pushing all the time/,
+            },
+            {
+                it: `gives up updating data after ${maxRetries} retries with an error containing "[rejected]" in message`,
+                pushErrorMessage: '... [rejected] ...',
+                pushErrorCount: maxRetries,
+                error: /Auto-push failed 3 times since the remote branch gh-pages rejected pushing all the time/,
+            },
+            {
+                it: 'handles an unexpected error without retry',
+                pushErrorMessage: 'Some fatal error',
+                pushErrorCount: 1,
+                error: /Some fatal error/,
+            },
+        ];
+
+        for (const t of retryCases) {
+            it(t.it, async function() {
+                gitSpy.pushFailure = t.pushErrorMessage;
+                gitSpy.pushFailureCount = t.pushErrorCount;
+                const config = { ...defaultCfg, benchmarkDataDirPath: 'with-index-html' };
+                const added: Benchmark = {
+                    commit: commit('current commit id'),
+                    date: lastUpdate,
+                    benches: [bench('bench_fib_10', 110)],
+                };
+
+                const originalDataJs = path.join(config.benchmarkDataDirPath, 'original_data.js');
+                const dataJs = path.join(config.benchmarkDataDirPath, 'data.js');
+                await fs.copyFile(originalDataJs, dataJs);
+
+                const history = gitHistory({ dir: 'with-index-html', addIndexHtml: false });
+                if (t.pushErrorCount > 0) {
+                    // First 2 commands are fetch and switch. They are not repeated on retry
+                    const retryHistory = history.slice(2, -1);
+                    retryHistory.push(['cmd', ['reset', '--hard', 'HEAD~1']]);
+
+                    const retries = Math.min(t.pushErrorCount, maxRetries);
+                    for (let i = 0; i < retries; i++) {
+                        history.splice(2, 0, ...retryHistory);
+                    }
+                }
+
+                try {
+                    await writeBenchmark(added, config);
+                    eq(history, gitSpy.history);
+                } catch (err) {
+                    if (t.error === undefined) {
+                        throw err;
+                    }
+                    ok(t.error.test(err.message), `'${err.message}' did not match to ${t.error}`);
+                }
+            });
+        }
     });
 });

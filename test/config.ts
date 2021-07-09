@@ -262,7 +262,6 @@ describe('configFromJobInput()', function() {
             what: 'boolean value parsing an empty input as false',
             inputs: {
                 ...defaultInputs,
-                'skip-fetch-gh-pages': '',
                 'comment-on-alert': '',
                 'fail-on-alert': '',
             },

@@ -71,7 +71,7 @@ mock('@actions/github', {
     context: gitHubContext,
 });
 
-const { cmd, add, checkout, clone, commit, currentBranch, pull, push } = require('../src/git');
+const { cmd, add, checkout,  commit, push, pull, clone, currentBranch } = require('../src/git');
 const ok: (x: any) => asserts x = A.ok;
 const userArgs = [
     '-c',
@@ -156,7 +156,7 @@ describe('git', function() {
         });
 
         it('runs `git clone` with given token, repository and options', async function() {
-            const stdout = await clone('this-is-token', 'user/my-repository', 'opt1', 'opt2');
+            const stdout = await clone('this-is-token', gitHubContext.payload.repository?.full_name, 'opt1', 'opt2');
             const args = fakedExec.lastArgs;
 
             eq(stdout, 'this is test');
@@ -166,7 +166,7 @@ describe('git', function() {
                 args[1],
                 userArgs.concat([
                     'clone',
-                    'https://x-access-token:this-is-token@github.com/user/my-repository.git',
+                    'https://x-access-token:this-is-token@github.com/user/repo.git',
                     'opt1',
                     'opt2',
                 ]),
@@ -176,7 +176,7 @@ describe('git', function() {
         it('raises an error when repository info is not included in payload', async function() {
             gitHubContext.payload.repository = null;
             await A.rejects(
-                () => clone('my-token', 'user/my-repository', 'opt1', 'opt2'),
+                () => clone('my-token', gitHubContext.payload.repository?.full_name, 'opt1', 'opt2'),
                 /^Error: Repository info is not available in payload/,
             );
             eq(fakedExec.lastArgs, null);
@@ -261,7 +261,7 @@ describe('git', function() {
         });
 
         it('runs `git push` with given repository and options with token', async function() {
-            const stdout = await push('this-is-token', 'user/my-repository', 'opt1', 'opt2');
+            const stdout = await push('this-is-token', gitHubContext.payload.repository?.full_name, 'opt1', 'opt2');
             const args = fakedExec.lastArgs;
 
             eq(stdout, 'this is test');
@@ -273,14 +273,14 @@ describe('git', function() {
                     'opt1',
                     'opt2',
                     'push',
-                    'https://x-access-token:this-is-token@github.com/user/my-repository.git',
+                    'https://x-access-token:this-is-token@github.com/user/repo.git',
                     '--no-verify',
                 ]),
             );
         });
 
         it('runs `git push` with given repository and options without token', async function() {
-            const stdout = await push(undefined, 'my-repository', 'opt1', 'opt2');
+            const stdout = await push(undefined, gitHubContext.payload.repository?.full_name, 'opt1', 'opt2');
             const args = fakedExec.lastArgs;
 
             eq(stdout, 'this is test');
