@@ -50,7 +50,7 @@ mkdir -p src
 mv .release/action.yml .
 mv .release/*.js ./src/
 mv .release/*.json .
-
+mv .release/.gitignore
 git add action.yml ./src/*.js package.json package-lock.json .gitignore README.rst
 set +x
 
