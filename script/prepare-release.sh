@@ -40,19 +40,21 @@ npm prune --production
 rm -rf .release
 mkdir -p .release
 
-cp -r action.yml src/*.js package.json package-lock.json .gitignore README.rst node_modules .release/
+cp action.yml src/*.js package.json package-lock.json README.rst .release/
+cp -R node_modules .release/node_modules
 
 git checkout "$version"
-rm -rf node_modules/.cache  # remove node_modules/.cache
+git pull
+git rm -rf node_modules
+rm -rf node_modules  # remove node_modules/.cache
 mkdir -p src
 
 mv .release/action.yml .
 mv .release/*.js ./src/
 mv .release/*.json .
-mv .release/.gitignore .
 mv .release/README.rst .
 mv .release/node_modules .
-git add -f action.yml ./src/*.js package.json package-lock.json .gitignore README.rst node_modules
+git add -f action.yml ./src/*.js package.json package-lock.json README.rst node_modules
 set +x
 
 echo "Done. Please check 'git diff --cached' to verify changes. If ok, add version tag and push it to remote"
