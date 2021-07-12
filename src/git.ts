@@ -53,11 +53,9 @@ export async function cmd(...args: string[]): Promise<string> {
 }
 
 function getRemoteUrl(token: string | undefined, fullName?: string): string {
-    /* eslint-disable @typescript-eslint/camelcase */
     if (!fullName) {
         fullName = github.context.payload.repository?.full_name;
     }
-    /* eslint-enable @typescript-eslint/camelcase */
 
     if (!fullName) {
         throw new Error(`Repository info is not available in payload: ${JSON.stringify(github.context.payload)}`);

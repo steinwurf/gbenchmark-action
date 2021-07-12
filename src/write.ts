@@ -69,7 +69,7 @@ function findAlerts(curSuite: Benchmark, prevSuite: Benchmark, threshold: number
 
     const alerts = [];
     for (const current of curSuite.benches) {
-        const prev = prevSuite.benches.find(b => b.name === current.name);
+        const prev = prevSuite.benches.find((b) => b.name === current.name);
         if (prev === undefined) {
             core.debug(`Skipped because benchmark '${current.name}' is not found in previous benchmarks`);
             continue;
@@ -123,7 +123,6 @@ function strVal(b: BenchmarkResult): string {
 
 function commentFooter(): string {
     const repo = getCurrentRepo();
-    // eslint-disable-next-line @typescript-eslint/camelcase
     const repoUrl = repo.html_url ?? '';
     const actionUrl = repoUrl + '/actions?query=workflow%3A' + encodeURIComponent(github.context.workflow);
 
@@ -142,7 +141,7 @@ function buildComment(benchName: string, curSuite: Benchmark, prevSuite: Benchma
 
     for (const current of curSuite.benches) {
         let line;
-        const prev = prevSuite.benches.find(i => i.name === current.name);
+        const prev = prevSuite.benches.find((i) => i.name === current.name);
 
         if (prev) {
             const ratio = biggerIsBetter()
@@ -205,13 +204,13 @@ async function leaveComment(commitId: string, body: string, token: string) {
     core.debug('Sending comment:\n' + body);
 
     const repo = getCurrentRepo();
-    // eslint-disable-next-line @typescript-eslint/camelcase
+
     const repoUrl = repo.html_url ?? '';
     const client = new github.GitHub(token);
     const res = await client.repos.createCommitComment({
         owner: repo.owner.login,
         repo: repo.name,
-        // eslint-disable-next-line @typescript-eslint/camelcase
+
         commit_sha: commitId,
         body,
     });
@@ -265,7 +264,7 @@ async function handleAlert(benchName: string, curSuite: Benchmark, prevSuite: Be
             throw new Error("'comment-on-alert' input is set but 'github-token' input is not set");
         }
         const res = await leaveComment(curSuite.commit.id, body, githubToken);
-        // eslint-disable-next-line @typescript-eslint/camelcase
+
         url = res.data.html_url;
         message = body + `\nComment was generated at ${url}`;
     }
@@ -274,7 +273,7 @@ async function handleAlert(benchName: string, curSuite: Benchmark, prevSuite: Be
         // Note: alertThreshold is smaller than failThreshold. It was checked in config.ts
         const len = alerts.length;
         const threshold = floatStr(failThreshold);
-        const failures = alerts.filter(a => a.ratio > failThreshold);
+        const failures = alerts.filter((a) => a.ratio > failThreshold);
         if (failures.length > 0) {
             core.debug('Mark this workflow as fail since one or more fatal alerts found');
             if (failThreshold !== alertThreshold) {
@@ -297,7 +296,6 @@ function addBenchmarkToDataJson(
     data: DataJson,
     maxItems: number | null,
 ): Benchmark | null {
-    // eslint-disable-next-line @typescript-eslint/camelcase
     const htmlUrl = github.context.payload.repository?.html_url ?? '';
 
     let prevBench: Benchmark | null = null;
@@ -333,7 +331,7 @@ function addBenchmarkToDataJson(
 
 function isRemoteRejectedError(err: unknown) {
     if (err instanceof Error) {
-        return ['[remote rejected]', '[rejected]'].some(l => err.message.includes(l));
+        return ['[remote rejected]', '[rejected]'].some((l) => err.message.includes(l));
     }
     return false;
 }
@@ -514,6 +512,7 @@ async function writeBenchmarkToExternalJson(
     return prevBench;
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export async function writeBenchmark(bench: Benchmark, config: Config) {
     const { name, externalDataJsonPath } = config;
     const prevBench = externalDataJsonPath

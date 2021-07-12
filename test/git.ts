@@ -94,19 +94,19 @@ const userArgs = [
     'http.https://github.com/.extraheader=',
 ];
 
-describe('git', function() {
-    after(function() {
+describe('git', function () {
+    after(function () {
         mock.stop('@actions/exec');
         mock.stop('@actions/core');
         mock.stop('@actions/github');
     });
 
-    afterEach(function() {
+    afterEach(function () {
         fakedExec.reset();
     });
 
-    describe('cmd()', function() {
-        it('runs Git command successfully', async function() {
+    describe('cmd()', function () {
+        it('runs Git command successfully', async function () {
             const stdout = await cmd('log', '--oneline');
             const args = fakedExec.lastArgs;
 
@@ -114,22 +114,23 @@ describe('git', function() {
             ok(args);
             eq(args[0], 'git');
             eq(args[1], userArgs.concat(['log', '--oneline']));
+            // eslint-disable-next-line @typescript-eslint/ban-types
             ok('listeners' in (args[2] as object));
         });
 
-        it('raises an error when command returns non-zero exit code', async function() {
+        it('raises an error when command returns non-zero exit code', async function () {
             fakedExec.exitCode = 101;
             await A.rejects(() => cmd('show'), /^Error: Command 'git show' failed: /);
             neq(fakedExec.lastArgs, null);
         });
 
-        it('raises an error with stderr output', async function() {
+        it('raises an error with stderr output', async function () {
             fakedExec.exitCode = 101;
             fakedExec.stderr = 'this is error output!';
             await A.rejects(() => cmd('show'), /this is error output!/);
         });
 
-        it('raises an error when exec.exec() threw an error', async function() {
+        it('raises an error when exec.exec() threw an error', async function () {
             fakedExec.error = 'this is error from exec.exec';
             fakedExec.stderr = 'this is stderr output!';
             await A.rejects(() => cmd('show'), /this is error from exec\.exec/);
@@ -137,12 +138,12 @@ describe('git', function() {
         });
     });
 
-    describe('add()', function() {
-        afterEach(function() {
+    describe('add()', function () {
+        afterEach(function () {
             gitHubContext.payload.path = { full_path: '/path/to/dir' };
         });
 
-        it('runs `git add` with given path and options', async function() {
+        it('runs `git add` with given path and options', async function () {
             const stdout = await add('/path/to/dir', 'opt1', 'opt2');
             const args = fakedExec.lastArgs;
 
@@ -153,12 +154,12 @@ describe('git', function() {
         });
     });
 
-    describe('clone()', function() {
-        afterEach(function() {
+    describe('clone()', function () {
+        afterEach(function () {
             gitHubContext.payload.repository = { full_name: 'user/repo' };
         });
 
-        it('runs `git clone` with given token, repository and options', async function() {
+        it('runs `git clone` with given token, repository and options', async function () {
             const stdout = await clone('this-is-token', gitHubContext.payload.repository?.full_name, 'opt1', 'opt2');
             const args = fakedExec.lastArgs;
 
@@ -176,7 +177,7 @@ describe('git', function() {
             );
         });
 
-        it('raises an error when repository info is not included in payload', async function() {
+        it('raises an error when repository info is not included in payload', async function () {
             gitHubContext.payload.repository = null;
             await A.rejects(
                 () => clone('my-token', gitHubContext.payload.repository?.full_name, 'opt1', 'opt2'),
@@ -186,12 +187,12 @@ describe('git', function() {
         });
     });
 
-    describe('checkout()', function() {
-        afterEach(function() {
+    describe('checkout()', function () {
+        afterEach(function () {
             gitHubContext.payload.repository = { full_name: 'user/repo' };
         });
 
-        it('runs `git checkout` with given branch and options', async function() {
+        it('runs `git checkout` with given branch and options', async function () {
             const stdout = await checkout('my-branch', 'opt1', 'opt2');
             const args = fakedExec.lastArgs;
 
@@ -202,12 +203,12 @@ describe('git', function() {
         });
     });
 
-    describe('commit()', function() {
-        afterEach(function() {
+    describe('commit()', function () {
+        afterEach(function () {
             gitHubContext.payload.repository = { full_name: 'user/repo' };
         });
 
-        it('runs `git commit` with given message and options', async function() {
+        it('runs `git commit` with given message and options', async function () {
             const stdout = await commit('my-message', 'opt1', 'opt2');
             const args = fakedExec.lastArgs;
 
@@ -218,12 +219,12 @@ describe('git', function() {
         });
     });
 
-    describe('currentBranch()', function() {
-        afterEach(function() {
+    describe('currentBranch()', function () {
+        afterEach(function () {
             gitHubContext.payload.repository = { full_name: 'user/repo' };
         });
 
-        it('runs `git rev-parse` with given options', async function() {
+        it('runs `git rev-parse` with given options', async function () {
             const stdout = await currentBranch('opt1', 'opt2');
             const args = fakedExec.lastArgs;
 
@@ -234,12 +235,12 @@ describe('git', function() {
         });
     });
 
-    describe('push()', function() {
-        afterEach(function() {
+    describe('push()', function () {
+        afterEach(function () {
             gitHubContext.payload.repository = { full_name: 'user/repo' };
         });
 
-        it('runs `git push` with given repository and options with token', async function() {
+        it('runs `git push` with given repository and options with token', async function () {
             const stdout = await push('this-is-token', gitHubContext.payload.repository?.full_name, 'opt1', 'opt2');
             const args = fakedExec.lastArgs;
 
@@ -259,12 +260,12 @@ describe('git', function() {
         });
     });
 
-    describe('pull()', function() {
-        afterEach(function() {
+    describe('pull()', function () {
+        afterEach(function () {
             gitHubContext.payload.repository = { full_name: 'user/repo' };
         });
 
-        it('runs `git pull` with given repository and options with token', async function() {
+        it('runs `git pull` with given repository and options with token', async function () {
             const stdout = await pull('this-is-token', 'user/my-repository', 'opt1', 'opt2');
             const args = fakedExec.lastArgs;
 
@@ -283,12 +284,12 @@ describe('git', function() {
         });
     });
 
-    describe('reset()', function() {
-        afterEach(function() {
+    describe('reset()', function () {
+        afterEach(function () {
             gitHubContext.payload.repository = { full_name: 'user/repo' };
         });
 
-        it('runs `git reset` with given ptions', async function() {
+        it('runs `git reset` with given ptions', async function () {
             const stdout = await reset('opt1', 'opt2');
             const args = fakedExec.lastArgs;
 

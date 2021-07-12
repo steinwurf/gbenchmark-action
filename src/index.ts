@@ -14,4 +14,4 @@ async function main() {
     console.log('gbenchmark-action was run successfully!', '\nData:', bench);
 }
 
-main().catch(e => core.setFailed(e.message));
+main().catch((e) => core.setFailed(e.message));

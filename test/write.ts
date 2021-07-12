@@ -152,21 +152,21 @@ mock('../src/git', {
 
 const writeBenchmark: (b: Benchmark, c: Config) => Promise<any> = require('../src/write').writeBenchmark;
 
-describe('writeBenchmark()', function() {
+describe('writeBenchmark()', function () {
     const savedCwd = process.cwd();
 
-    before(function() {
+    before(function () {
         process.chdir(path.join(__dirname, 'data', 'write'));
     });
 
-    after(function() {
+    after(function () {
         mock.stop('@actions/core');
         mock.stop('@actions/github');
         mock.stop('../src/git');
         process.chdir(savedCwd);
     });
 
-    afterEach(function() {
+    afterEach(function () {
         fakedRepos.clear();
     });
 
@@ -201,7 +201,7 @@ describe('writeBenchmark()', function() {
         };
     }
 
-    context('with external json file', function() {
+    context('with external json file', function () {
         const dataJson = 'data.json';
         const defaultCfg: Config = {
             name: 'Test benchmark',
@@ -225,7 +225,7 @@ describe('writeBenchmark()', function() {
 
         const savedRepository = gitHubContext.payload.repository;
 
-        afterEach(async function() {
+        afterEach(async function () {
             try {
                 await fs.unlink(dataJson);
             } catch (_) {
@@ -281,7 +281,7 @@ describe('writeBenchmark()', function() {
             },
         ];
         for (const t of normalCases) {
-            it(t.it, async function() {
+            it(t.it, async function () {
                 if (t.repoPayload !== undefined) {
                     gitHubContext.payload.repository = t.repoPayload;
                 }
@@ -382,11 +382,11 @@ describe('writeBenchmark()', function() {
     });
 
     // Tests for updating GitHub branch
-    context('with gh-pages branch', function() {
-        beforeEach(async function() {
+    context('with gh-pages branch', function () {
+        beforeEach(async function () {
             (global as any).window = {}; // Fake window object on browser
         });
-        afterEach(async function() {
+        afterEach(async function () {
             gitSpy.clear();
             delete (global as any).window;
             for (const p of [
@@ -396,7 +396,7 @@ describe('writeBenchmark()', function() {
                 path.join('with-index-html', 'data.js'),
             ]) {
                 // Ignore exception
-                await new Promise(resolve => rimraf(p, resolve));
+                await new Promise((resolve) => rimraf(p, resolve));
             }
         });
 
@@ -494,7 +494,7 @@ describe('writeBenchmark()', function() {
         ];
 
         for (const t of normalCases) {
-            it(t.it, async function() {
+            it(t.it, async function () {
                 if (t.privateRepo) {
                     gitHubContext.payload.repository = gitHubContext.payload.repository
                         ? { ...gitHubContext.payload.repository, private: true }
