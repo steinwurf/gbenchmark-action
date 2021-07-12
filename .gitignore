@@ -1,4 +1,3 @@
-/node_modules
 /src/*.js
 /src/*.js.map
 /examples/rust/Cargo.lock
