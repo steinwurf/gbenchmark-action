@@ -433,7 +433,7 @@ describe('writeBenchmark()', function () {
             outputFilePath: 'dummy', // Should not affect
             ghBranch: 'gh-pages',
             ghRepository: 'dummy repo',
-            benchmarkDataDirPath: 'data-dir', // Should not affect
+            benchmarkDataDirPath: 'with-index-html', // Should not affect
             githubToken: 'dummy token',
             autoPush: true,
             autoPushFilter: '',
@@ -464,11 +464,10 @@ describe('writeBenchmark()', function () {
             const hist: Array<[GitFunc, unknown[]] | undefined> = [
                 ['clone', [token, repository]],
                 ['pull', [token, repository, extraArgs[0], extraArgs[1]]],
-                ['checkout', ['gh-pages', extraArgs[0], extraArgs[1]]],
+                ['checkout', ['gh-pages'].concat(extraArgs)],
                 ['add', [dir, extraArgs[0], extraArgs[1]]],
                 ['commit', ['add Test benchmark google benchmark result for current commit id'].concat(extraArgs)],
                 autoPush ? ['push', [token, repository, extraArgs[0], extraArgs[1]]] : undefined,
-                autoPush ? ['reset', [extraArgs[0], extraArgs[1]]] : undefined,
             ];
             return hist.filter((x: [GitFunc, unknown[]] | undefined): x is [GitFunc, unknown[]] => x !== undefined);
         }
@@ -489,7 +488,7 @@ describe('writeBenchmark()', function () {
                     date: lastUpdate,
                     benches: [bench('bench_fib_10', 135)],
                 },
-                gitHistory: gitHistory(),
+                gitHistory: gitHistory({ dir: 'with-index-html' }),
             },
         ];
 
@@ -545,7 +544,7 @@ describe('writeBenchmark()', function () {
                 ok(await isFile(path.join(t.config.benchmarkDataDirPath, 'index.html')));
                 ok(await isFile(dataJs));
 
-                const data = await loadDataJs(path.join(t.config.benchmarkDataDirPath, 'data.js'));
+                const data = await loadDataJs(path.join(t.config.benchmarkDataDirPath));
                 ok(data);
 
                 eq(typeof data.lastUpdate, 'number');

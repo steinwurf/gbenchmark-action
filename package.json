@@ -5,15 +5,10 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -p .",
-    "watch:tsc": "tsc -p . --watch --preserveWatchOutput",
-    "watch:mocha": "mocha --watch ./test",
-    "watch": "npm-run-all -p watch:tsc watch:mocha",
     "lint": "eslint '**/*.ts'",
     "fix": "eslint --fix '**/*.ts'",
     "mocha": "mocha ./test",
-    "test": "npm-run-all build mocha",
-    "coverage": "nyc --reporter=lcov --reporter=text npm run mocha",
-    "cov": "nyc --reporter=lcov --reporter=text-summary npm run mocha && open ./coverage/lcov-report/index.html"
+    "test": "npm-run-all build mocha"
   },
   "repository": {
     "type": "git",

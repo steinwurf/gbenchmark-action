@@ -148,7 +148,7 @@ export async function pull(
 }
 
 export async function reset(...gitOptions: string[]): Promise<string> {
-    core.debug(`Executing 'git pull' with token and git options '${gitOptions.join(' ')}'`);
+    core.debug(`Executing 'git reset' with git options '${gitOptions.join(' ')}'`);
 
     let args = ['reset', '--hard', 'HEAD~1'];
     if (gitOptions.length > 0) {
