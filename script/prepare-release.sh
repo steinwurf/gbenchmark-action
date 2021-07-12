@@ -43,7 +43,6 @@ mkdir -p .release
 cp -r action.yml src/*.js package.json package-lock.json .gitignore README.rst node_modules .release/
 
 git checkout "$version"
-git pull
 rm -rf node_modules/.cache  # remove node_modules/.cache
 mkdir -p src
 
