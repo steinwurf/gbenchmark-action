@@ -11,3 +11,7 @@
 /scripts/*.js.map
 /.nyc_output
 /coverage
+/build
+/build_current
+/.waf*
+.lock-*
