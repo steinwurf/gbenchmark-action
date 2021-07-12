@@ -44,7 +44,6 @@ cp action.yml src/*.js package.json package-lock.json README.rst .release/
 cp -R node_modules .release/node_modules
 
 git checkout "$version"
-git pull
 git rm -rf node_modules
 rm -rf node_modules  # remove node_modules/.cache
 mkdir -p src
