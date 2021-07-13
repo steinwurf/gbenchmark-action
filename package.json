@@ -4,11 +4,12 @@
   "description": "action to compare google benchmarks",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -p .",
+    "build": "tsc -p ./tsconfig.json",
+    "build:test": "tsc -p ./tsconfig.test.json",
     "lint": "eslint '**/*.ts'",
-    "fix": "eslint --fix '**/*.ts'",
-    "mocha": "mocha ./test",
-    "test": "npm-run-all build mocha"
+    "fix": "eslint --fix 'src/*.ts'",
+    "mocha": "mocha ./test-temp/test/",
+    "test": "npm run build:test && cp -R ./test/data ./test-temp/test && npm run mocha"
   },
   "repository": {
     "type": "git",

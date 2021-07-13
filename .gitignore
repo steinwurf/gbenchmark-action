@@ -13,5 +13,6 @@
 /coverage
 /build
 /build_current
+/test-temp
 /.waf*
 .lock-*

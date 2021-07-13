@@ -69,4 +69,4 @@ inputs:
 
 runs:
     using: 'node12'
-    main: 'src/index.js'
+    main: 'lib/index.js'
