@@ -201,7 +201,7 @@ To transpile, lint and test this project, you need Node.js version 12 **or highe
 
 https://phoenixnap.com/kb/update-node-js-version
 
-If so, you first install all the required depencies in a folder node_modules by calling::
+After installing Node, you can install all the required dependencies in a folder node_modules by calling::
 
     python3 waf configure
 
