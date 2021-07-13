@@ -7,7 +7,7 @@
     "build": "tsc -p ./tsconfig.json",
     "build:test": "tsc -p ./tsconfig.test.json",
     "lint": "eslint '**/*.ts'",
-    "fix": "eslint --fix 'src/*.ts'",
+    "fix": "eslint --fix '**/*.ts'",
     "mocha": "mocha ./test-temp/test/",
     "test": "npm run build:test && cp -R ./test/data ./test-temp/test && npm run mocha"
   },

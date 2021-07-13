@@ -193,3 +193,32 @@ larger than zero. If the number of benchmark results for some benchmark suite ex
 the oldest one will be removed before storing the results to file. By default this value is empty
 which means there is no limit.
 
+Development
+-----------
+
+This action is written in Typescript, but is transpiled to Javascript using Node.js.
+To transpile, lint and test this project, you need Node.js version 12 **or higher**. You can install Node using this guide for Linux::
+
+    https://phoenixnap.com/kb/update-node-js-version
+
+If so, you first install all the required depencies in a folder node_modules by calling::
+
+    python3 waf configure
+
+You can then transpile the Typescript by calling::
+
+    python3 waf
+
+The resulting .js-files will replace the current files in lib/.
+
+You can run a combined transpile, lint and test with::
+
+    python3 waf --run_tests
+
+The transpiled tests and dependencies thereof will be placed in test-temp/ .
+
+Transpile, lint and test can be called individually using::
+
+    npm run build
+    npm run lint
+    npm run mocha / npm run test
