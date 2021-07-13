@@ -197,7 +197,7 @@ Development
 -----------
 
 This action is written in Typescript, but is transpiled to Javascript using Node.js.
-To transpile, lint and test this project, you need Node.js version 12 **or higher**. You can install Node using this guide for Linux
+To transpile, lint and test this project, you need Node.js version 12 **or higher**. You can install Node using this guide for Linux:
 
 https://phoenixnap.com/kb/update-node-js-version
 
