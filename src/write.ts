@@ -431,7 +431,7 @@ async function writeBenchmarkToGitHubWithRetry(
     }
     await git.checkout(ghBranch, ...extraGitArguments);
 
-    if (!io.which(benchmarkDataDirPath)) {
+    if (!(await io.which(benchmarkDataDirPath))) {
         await io.mkdirP(benchmarkDataDirPath);
         core.debug(`'${benchmarkDataDirPath}' does not exist. Created it: ${await io.which(benchmarkDataDirPath)}`);
     }
