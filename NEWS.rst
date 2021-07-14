@@ -6,6 +6,10 @@ every change, see the Git log.
 
 Latest
 ------
+* tbd
+
+1.0.2
+-----
 * Patch: Fixed a problem with the benchmark-data-dir not being created if it didn't exist.
 
 1.0.1

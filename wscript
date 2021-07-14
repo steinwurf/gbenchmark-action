@@ -7,7 +7,7 @@ from waflib.extras.wurf.directory import remove_directory
 
 
 APPNAME = "gbenchmark-action"
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 
 
 def options(opt):
