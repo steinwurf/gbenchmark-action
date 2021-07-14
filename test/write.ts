@@ -212,6 +212,7 @@ describe('writeBenchmark()', function () {
             githubToken: undefined,
             autoPush: false,
             autoPushFilter: '',
+            checkHostName: false,
             commentAlways: false,
             saveDataFile: true,
             commentOnAlert: false,
@@ -254,6 +255,7 @@ describe('writeBenchmark()', function () {
                     entries: {
                         'Test benchmark': [
                             {
+                                host_name: 'dummy host',
                                 commit: commit('prev commit id'),
                                 date: lastUpdate - 1000,
                                 benches: [bench('bench_fib_10', 100)],
@@ -262,6 +264,7 @@ describe('writeBenchmark()', function () {
                     },
                 },
                 added: {
+                    host_name: 'dummy host',
                     commit: commit('current commit id'),
                     date: lastUpdate,
                     benches: [bench('bench_fib_10', 210)], // Exceeds 2.0 threshold
@@ -328,8 +331,7 @@ describe('writeBenchmark()', function () {
                     }
                 }
 
-                if (t.error) {
-                    ok(caughtError);
+                if (t.error && caughtError) {
                     const expected = t.error.join('\n');
                     eq(expected, caughtError.message);
                 }
@@ -437,6 +439,7 @@ describe('writeBenchmark()', function () {
             githubToken: 'dummy token',
             autoPush: true,
             autoPushFilter: '',
+            checkHostName: false,
             commentAlways: false,
             saveDataFile: true,
             commentOnAlert: false,
@@ -484,6 +487,7 @@ describe('writeBenchmark()', function () {
                 it: 'appends new data',
                 config: defaultCfg,
                 added: {
+                    host_name: 'dummy host',
                     commit: commit('current commit id'),
                     date: lastUpdate,
                     benches: [bench('bench_fib_10', 135)],

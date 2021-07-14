@@ -12,6 +12,7 @@ export interface Config {
     githubToken: string | undefined;
     autoPush: boolean;
     autoPushFilter: string;
+    checkHostName: boolean;
     commentAlways: boolean;
     saveDataFile: boolean;
     commentOnAlert: boolean;
@@ -203,6 +204,7 @@ export async function configFromJobInput(): Promise<Config> {
     const githubToken: string | undefined = core.getInput('github-token') || undefined;
     const autoPush = getBoolInput('auto-push');
     const autoPushFilter = core.getInput('auto-push-filter');
+    const checkHostName = getBoolInput('check-host-name');
     const commentAlways = getBoolInput('comment-always');
     const saveDataFile = getBoolInput('save-data-file');
     const commentOnAlert = getBoolInput('comment-on-alert');
@@ -243,6 +245,7 @@ export async function configFromJobInput(): Promise<Config> {
         githubToken,
         autoPush,
         autoPushFilter,
+        checkHostName,
         commentAlways,
         saveDataFile,
         commentOnAlert,

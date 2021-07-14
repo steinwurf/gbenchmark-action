@@ -108,6 +108,20 @@ Please see the 'Commit comment' section for more details.
 
 If it is set to `true`, this action automatically pushes the generated commit to the given repository and or branch.
 
+**auto-push-filter** (Optional)
+
+- Type: string
+- Default: ''
+
+Takes a branch name as input. If auto-push is set to true, this filter can be given to ensure, that auto-push only
+occurs on a specific branch of the repository to which the commit was made.
+
+**check-host-name** (Optional)
+
+- Type: Boolean
+- Default: false
+
+Checks if the previous and current benchmark are run on the same machine.
 
 **comment-always** (Optional)
 
@@ -201,6 +215,19 @@ To transpile, lint and test this project, you need Node.js version 12 **or highe
 
 https://phoenixnap.com/kb/update-node-js-version
 
+TLDR version:
+
+Run the following commands::
+
+    sudo apt update
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+    source ~/.bashrc
+    nvm --version
+    nvm ls          #Run this if to check your current version of node (if any).
+    nvm ls-remote   #Checks what versions are available. Find the latest stable.
+    nvm install [version.number]
+
+
 After installing Node, you can install all the required dependencies in a folder node_modules by calling::
 
     python3 waf configure
@@ -222,3 +249,17 @@ Transpile, lint and test can be called individually using::
     npm run build
     npm run lint
     npm run mocha / npm run test
+
+Developer Notes
+---------------
+
+Getting started with typescript in Node:  https://khalilstemmler.com/blogs/typescript/node-starter-project/
+Arguments to add to the tsconfig.json:    https://www.typescriptlang.org/docs/handbook/compiler-options.html
+Dependencies in your Node project:        https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file
+
+
+Credits
+-------
+
+This project is a tailored version of @rhysd's repository over at https://github.com/rhysd/github-action-benchmark.
+We at Steinwurf would like to extend our gratitude to them for making and maintaining this awesome action.

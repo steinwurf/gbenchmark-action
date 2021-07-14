@@ -33,3 +33,20 @@ def build(bld):
         bld.exec_command("npm run lint", stdout=None, stderr=None)
 
         bld.exec_command("npm run test", stdout=None, stderr=None)
+
+
+class ReleaseContext(BuildContext):
+    cmd = "prepare_release"
+    fun = "prepare_release"
+
+
+def prepare_release(ctx):
+    """Prepare a release."""
+
+    # Rewrite versions
+    with ctx.rewrite_file(filename="package.json") as f:
+
+        pattern = r'"version:" "\d+.\d+.\d+"'
+        replacement = '"version": {}'.format(VERSION)
+
+        f.regex_replace(pattern=pattern, replacement=replacement)

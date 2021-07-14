@@ -64,12 +64,19 @@ interface Alert {
     ratio: number;
 }
 
-function findAlerts(curSuite: Benchmark, prevSuite: Benchmark, threshold: number): Alert[] {
+function findAlerts(curSuite: Benchmark, prevSuite: Benchmark, threshold: number, checkHostName: boolean): Alert[] {
     core.debug(`Comparing current:${curSuite.commit.id} and prev:${prevSuite.commit.id} for alert`);
 
     const alerts = [];
+    if (checkHostName && curSuite.host_name !== prevSuite.host_name) {
+        throw new Error(
+            `The current and previous benchmarks were not run on the same machine: ${curSuite.host_name} != ${prevSuite.host_name}`,
+        );
+    }
     for (const current of curSuite.benches) {
-        const prev = prevSuite.benches.find((b) => b.name === current.name);
+        const prev = prevSuite.benches.find((b) => {
+            b.name === current.name;
+        });
         if (prev === undefined) {
             core.debug(`Skipped because benchmark '${current.name}' is not found in previous benchmarks`);
             continue;
@@ -241,14 +248,22 @@ async function handleComment(benchName: string, curSuite: Benchmark, prevSuite: 
 }
 
 async function handleAlert(benchName: string, curSuite: Benchmark, prevSuite: Benchmark, config: Config) {
-    const { alertThreshold, githubToken, commentOnAlert, failOnAlert, alertCommentCcUsers, failThreshold } = config;
+    const {
+        alertThreshold,
+        githubToken,
+        commentOnAlert,
+        failOnAlert,
+        alertCommentCcUsers,
+        failThreshold,
+        checkHostName,
+    } = config;
 
     if (!commentOnAlert && !failOnAlert) {
         core.debug('Alert check was skipped because both comment-on-alert and fail-on-alert were disabled');
         return;
     }
 
-    const alerts = findAlerts(curSuite, prevSuite, alertThreshold);
+    const alerts = findAlerts(curSuite, prevSuite, alertThreshold, checkHostName);
     if (alerts.length === 0) {
         core.debug('No performance alert found happily');
         return;

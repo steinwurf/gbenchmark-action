@@ -41,6 +41,7 @@ describe('configFromJobInput()', function () {
         'github-token': '',
         'auto-push': 'false',
         'auto-push-filter': '',
+        'check-host-name': 'false',
         'comment-on-alert': 'false',
         'alert-threshold': '200%',
         'fail-on-alert': 'false',
@@ -178,6 +179,7 @@ describe('configFromJobInput()', function () {
         outputFilePath: string;
         autoPush: boolean;
         autoPushFilter: string;
+        checkHostName: boolean;
         commentOnAlert: boolean;
         alertThreshold: number;
         failOnAlert: boolean;
@@ -195,6 +197,7 @@ describe('configFromJobInput()', function () {
         outputFilePath: 'out.txt',
         autoPush: false,
         autoPushFilter: '',
+        checkHostName: false,
         githubToken: undefined,
         commentOnAlert: false,
         alertThreshold: 2,

@@ -34,6 +34,10 @@ inputs:
         description: 'Filter with a branch name to configure which branches auto-push shall occur on (if true). Does nothing if auto-push is false'
         required: false
         default: ''
+    check-host-name:
+        description: 'Check if the current and previous benchmarks were run on the same machines. If set to true, the workflow fails if the check fails.'
+        required: false
+        default: false
     comment-on-alert:
         description: 'Leave an alert comment when current benchmark result is worse than previous. Threshold is specified with alert-comment-threshold input. To enable this feature, github-token input must be given as well'
         required: false
