@@ -433,6 +433,7 @@ async function writeBenchmarkToGitHubWithRetry(
 
     if (!io.which(benchmarkDataDirPath)) {
         await io.mkdirP(benchmarkDataDirPath);
+        core.debug(`'${benchmarkDataDirPath}' does not exist. Created it: ${await io.which(benchmarkDataDirPath)}`);
     }
     const data = await loadDataJs(path.join(benchmarkDataDirPath, 'data.js'));
     const prevBench = addBenchmarkToDataJson(name, bench, data, maxItemsInChart);
