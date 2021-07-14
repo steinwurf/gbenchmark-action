@@ -46,7 +46,7 @@ def prepare_release(ctx):
     # Rewrite versions
     with ctx.rewrite_file(filename="package.json") as f:
 
-        pattern = r'"version:" "\d+.\d+.\d+"'
-        replacement = '"version": {}'.format(VERSION)
+        pattern = r'"version": "\d+.\d+.\d+"'
+        replacement = '"version": "{}"'.format(VERSION)
 
         f.regex_replace(pattern=pattern, replacement=replacement)
