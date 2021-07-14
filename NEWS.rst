@@ -6,4 +6,4 @@ every change, see the Git log.
 
 Latest
 ------
-* Initial release
+* Major: Initial release.
