@@ -50,3 +50,6 @@ def prepare_release(ctx):
         replacement = '"version": "{}"'.format(VERSION)
 
         f.regex_replace(pattern=pattern, replacement=replacement)
+
+    # Updates package-lock.json
+    ctx.exec_command("npm install", stdout=None, stderr=None)
