@@ -76,7 +76,7 @@ function findAlerts(curSuite: Benchmark, prevSuite: Benchmark, threshold: number
     for (const current of curSuite.benches) {
         const prev = prevSuite.benches.find((b) => {
             b.name.trim().toString() === current.name.trim().toString();
-            core.debug(`The names types are ${typeof b.name} and ${typeof current.name}`)
+            core.debug(`The names are ${b.name} and ${current.name}`)
         });
         if (prev === undefined) {
             core.debug(`Skipped because benchmark '${current.name}' is not found in previous benchmarks`);
