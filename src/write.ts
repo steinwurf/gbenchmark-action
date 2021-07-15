@@ -84,9 +84,10 @@ function findAlerts(curSuite: Benchmark, prevSuite: Benchmark, threshold: number
 
                 }
                 core.debug(`The names are ${b.name} and ${current.name}`);
+                core.debug(`${b.name.trim().toString() === current.name.trim().toString()}`);
             }
 
-            b.name.trim().toString() === current.name.trim().toString();
+            return b.name.trim().toString() === current.name.trim().toString();
 
         });
         if (prev === undefined) {
