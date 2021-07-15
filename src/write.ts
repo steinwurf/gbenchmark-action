@@ -81,14 +81,13 @@ function findAlerts(curSuite: Benchmark, prevSuite: Benchmark, threshold: number
                 for (index = 0; index < b.name.length; ++index) {
                     core.debug(`previous char ` + index + ": " + b.name.charCodeAt(index));
                     core.debug("current char " + index + ": " + current.name.charCodeAt(index));
-                }
-                for (index = 0; index < current.name.length; ++index) {
 
                 }
+                core.debug(`The names are ${b.name} and ${current.name}`);
             }
 
             b.name.trim().toString() === current.name.trim().toString();
-            core.debug(`The names are ${b.name} and ${current.name}`)
+
         });
         if (prev === undefined) {
             core.debug(`Skipped because benchmark '${current.name}' is not found in previous benchmarks`);
