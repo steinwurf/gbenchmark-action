@@ -8,6 +8,10 @@ Latest
 ------
 * tbd
 
+1.0.3
+-----
+* Patch: Fixed a problem with the string comparison of names of current and previous benchmarks
+
 1.0.2
 -----
 * Patch: Fixed a problem with the benchmark-data-dir not being created if it didn't exist.
