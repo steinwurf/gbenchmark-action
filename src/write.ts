@@ -75,19 +75,12 @@ function findAlerts(curSuite: Benchmark, prevSuite: Benchmark, threshold: number
     }
     for (const current of curSuite.benches) {
         const prev = prevSuite.benches.find((b) => {
-            if (b.name.trim().length == current.name.trim().length)
-            {
-                var index;
-                for (index = 0; index < b.name.length; ++index) {
-                    core.debug(`previous char ` + index + ": " + b.name.charCodeAt(index));
-                    core.debug("current char " + index + ": " + current.name.charCodeAt(index));
 
-                }
-                core.debug(`The names are ${b.name} and ${current.name}`);
-                core.debug(`${b.name.trim().toString() === current.name.trim().toString()}`);
-            }
+            core.debug(`1: ${b.name.trim().toString() === current.name.trim().toString()}`);
+            core.debug(`2: ${b.name.trim() === current.name.trim()}`);
+            core.debug(`3: ${b.name === current.name}`);
 
-            return b.name.trim().toString() === current.name.trim().toString();
+            return b.name === current.name;
 
         });
         if (prev === undefined) {
