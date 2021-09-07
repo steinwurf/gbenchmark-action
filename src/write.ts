@@ -69,9 +69,8 @@ function findAlerts(
     prevSuite: Benchmark,
     threshold: number,
     checkHostName: boolean,
-    withRepetitions: boolean
-    ): Alert[]
-    {
+    withRepetitions: boolean,
+): Alert[] {
     core.debug(`Comparing current:${curSuite.commit.id} and prev:${prevSuite.commit.id} for alert`);
 
     const alerts = [];
@@ -81,17 +80,14 @@ function findAlerts(
         );
     }
     for (const current of curSuite.benches) {
-
         const prev = prevSuite.benches.find((b) => {
-            if (withRepetitions){
-                if (b.name.endsWith('_mean')){
+            if (withRepetitions) {
+                if (b.name.endsWith('_mean')) {
                     return b.name === current.name;
-                }
-                else {
+                } else {
                     return false;
                 }
-            }
-            else{
+            } else {
                 return b.name === current.name;
             }
         });
