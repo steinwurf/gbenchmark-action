@@ -86,10 +86,10 @@ function validateName(name: string) {
 }
 
 function validateWithRepetitions(withRepetitions: string) {
-    if (withRepetitions == 'true' || withRepetitions == 'false') {
+    if (withRepetitions === 'true' || withRepetitions === 'false') {
         return;
     }
-    throw new Error('with-repetitions must be true or false')
+    throw new Error('with-repetitions must be true or false');
 }
 function validateGitHubToken(inputName: string, githubToken: string | undefined, todo: string) {
     if (!githubToken) {
@@ -208,7 +208,7 @@ export async function configFromJobInput(): Promise<Config> {
     const ghRepository: string = core.getInput('gh-repository');
     let benchmarkDataDirPath: string = core.getInput('benchmark-data-dir-path');
     const name: string = core.getInput('name');
-    let withRepetitionsString: string = core.getInput('with-repetitions');
+    const withRepetitionsString: string = core.getInput('with-repetitions');
     const githubToken: string | undefined = core.getInput('github-token') || undefined;
     const autoPush = getBoolInput('auto-push');
     const autoPushFilter = core.getInput('auto-push-filter');
@@ -228,7 +228,7 @@ export async function configFromJobInput(): Promise<Config> {
     benchmarkDataDirPath = validateBenchmarkDataDirPath(benchmarkDataDirPath);
     validateName(name);
     validateWithRepetitions(withRepetitionsString);
-    const withRepetitions = (withRepetitionsString === 'true');
+    const withRepetitions = withRepetitionsString === 'true';
     if (autoPush) {
         validateGitHubToken('auto-push', githubToken, 'to push GitHub pages branch to remote');
     }

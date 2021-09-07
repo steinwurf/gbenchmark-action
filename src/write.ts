@@ -64,7 +64,14 @@ interface Alert {
     ratio: number;
 }
 
-function findAlerts(curSuite: Benchmark, prevSuite: Benchmark, threshold: number, checkHostName: boolean, withRepetitions: boolean): Alert[] {
+function findAlerts(
+    curSuite: Benchmark,
+    prevSuite: Benchmark,
+    threshold: number,
+    checkHostName: boolean,
+    withRepetitions: boolean
+    ): Alert[]
+    {
     core.debug(`Comparing current:${curSuite.commit.id} and prev:${prevSuite.commit.id} for alert`);
 
     const alerts = [];
