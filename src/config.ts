@@ -9,6 +9,7 @@ export interface Config {
     ghBranch: string;
     ghRepository: string | undefined;
     benchmarkDataDirPath: string;
+    withRepetitions: boolean;
     githubToken: string | undefined;
     autoPush: boolean;
     autoPushFilter: string;
@@ -84,6 +85,12 @@ function validateName(name: string) {
     throw new Error('Name must not be empty');
 }
 
+function validateWithRepetitions(withRepetitions: string) {
+    if (withRepetitions == 'true' || withRepetitions == 'false') {
+        return;
+    }
+    throw new Error('with-repetitions must be true or false')
+}
 function validateGitHubToken(inputName: string, githubToken: string | undefined, todo: string) {
     if (!githubToken) {
         throw new Error(`'${inputName}' is enabled but 'github-token' is not set. Please give API token ${todo}`);
@@ -201,6 +208,7 @@ export async function configFromJobInput(): Promise<Config> {
     const ghRepository: string = core.getInput('gh-repository');
     let benchmarkDataDirPath: string = core.getInput('benchmark-data-dir-path');
     const name: string = core.getInput('name');
+    let withRepetitionsString: string = core.getInput('with-repetitions');
     const githubToken: string | undefined = core.getInput('github-token') || undefined;
     const autoPush = getBoolInput('auto-push');
     const autoPushFilter = core.getInput('auto-push-filter');
@@ -219,6 +227,8 @@ export async function configFromJobInput(): Promise<Config> {
     validateGhBranch(ghBranch);
     benchmarkDataDirPath = validateBenchmarkDataDirPath(benchmarkDataDirPath);
     validateName(name);
+    validateWithRepetitions(withRepetitionsString);
+    const withRepetitions = (withRepetitionsString === 'true');
     if (autoPush) {
         validateGitHubToken('auto-push', githubToken, 'to push GitHub pages branch to remote');
     }
@@ -242,6 +252,7 @@ export async function configFromJobInput(): Promise<Config> {
         ghBranch,
         ghRepository,
         benchmarkDataDirPath,
+        withRepetitions,
         githubToken,
         autoPush,
         autoPushFilter,

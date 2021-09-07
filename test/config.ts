@@ -38,6 +38,7 @@ describe('configFromJobInput()', function () {
         'gh-repository': '',
         'output-file-path': 'out.txt',
         'benchmark-data-dir-path': '.',
+        'with-repetitions': 'false',
         'github-token': '',
         'auto-push': 'false',
         'auto-push-filter': '',
@@ -73,6 +74,11 @@ describe('configFromJobInput()', function () {
         },
         // Cannot check 'benchmark-data-dir-path' invalidation because it throws an error only when
         // current working directory is not obtainable.
+        {
+            what: 'wrong with-repetitions value',
+            inputs: { ...defaultInputs, 'with-repetitions': 'lol' },
+            expected: /^Error: with-repetitions must be true or false/,
+        },
         {
             what: 'auto-push is set but github-token is not set',
             inputs: { ...defaultInputs, 'auto-push': 'true', 'github-token': '' },
@@ -177,6 +183,7 @@ describe('configFromJobInput()', function () {
         githubToken: string | undefined;
         benchmarkDataDirPath: string;
         outputFilePath: string;
+        withRepetitions: boolean;
         autoPush: boolean;
         autoPushFilter: string;
         checkHostName: boolean;
@@ -195,6 +202,7 @@ describe('configFromJobInput()', function () {
         ghRepository: undefined,
         benchmarkDataDirPath: '.',
         outputFilePath: 'out.txt',
+        withRepetitions: false,
         autoPush: false,
         autoPushFilter: '',
         checkHostName: false,

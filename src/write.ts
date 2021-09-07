@@ -64,7 +64,7 @@ interface Alert {
     ratio: number;
 }
 
-function findAlerts(curSuite: Benchmark, prevSuite: Benchmark, threshold: number, checkHostName: boolean): Alert[] {
+function findAlerts(curSuite: Benchmark, prevSuite: Benchmark, threshold: number, checkHostName: boolean, withRepetitions: boolean): Alert[] {
     core.debug(`Comparing current:${curSuite.commit.id} and prev:${prevSuite.commit.id} for alert`);
 
     const alerts = [];
@@ -74,8 +74,19 @@ function findAlerts(curSuite: Benchmark, prevSuite: Benchmark, threshold: number
         );
     }
     for (const current of curSuite.benches) {
+
         const prev = prevSuite.benches.find((b) => {
-            return b.name === current.name;
+            if (withRepetitions){
+                if (b.name.endsWith('_mean')){
+                    return b.name === current.name;
+                }
+                else {
+                    return false;
+                }
+            }
+            else{
+                return b.name === current.name;
+            }
         });
         if (prev === undefined) {
             core.debug(`Skipped because benchmark '${current.name}' is not found in previous benchmarks`);
@@ -249,6 +260,7 @@ async function handleComment(benchName: string, curSuite: Benchmark, prevSuite: 
 
 async function handleAlert(benchName: string, curSuite: Benchmark, prevSuite: Benchmark, config: Config) {
     const {
+        withRepetitions,
         alertThreshold,
         githubToken,
         commentOnAlert,
@@ -263,7 +275,7 @@ async function handleAlert(benchName: string, curSuite: Benchmark, prevSuite: Be
         return;
     }
 
-    const alerts = findAlerts(curSuite, prevSuite, alertThreshold, checkHostName);
+    const alerts = findAlerts(curSuite, prevSuite, alertThreshold, checkHostName, withRepetitions);
     if (alerts.length === 0) {
         core.debug('No performance alert found happily');
         return;

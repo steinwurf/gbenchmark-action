@@ -209,6 +209,7 @@ describe('writeBenchmark()', function () {
             ghBranch: 'dummy', // Should not affect
             ghRepository: undefined,
             benchmarkDataDirPath: 'dummy', // Should not affect
+            withRepetitions: false,
             githubToken: undefined,
             autoPush: false,
             autoPushFilter: '',
@@ -436,6 +437,7 @@ describe('writeBenchmark()', function () {
             ghBranch: 'gh-pages',
             ghRepository: 'dummy repo',
             benchmarkDataDirPath: 'with-index-html', // Should not affect
+            withRepetitions: false,
             githubToken: 'dummy token',
             autoPush: true,
             autoPushFilter: '',

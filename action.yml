@@ -23,6 +23,9 @@ inputs:
     benchmark-data-dir-path:
         description: 'Path to directory which contains benchmark files on GitHub pages branch'
         required: true
+    with-repetitions:
+        description: 'If the benchmarks are with repetitions'
+        required: true
     github-token:
         description: 'GitHub API token to pull/push the branch/repository. For public repository, this must be personal access token for now. Please read README.md for more details'
         required: false
@@ -34,6 +37,7 @@ inputs:
         description: 'Filter with a branch name to configure which branches auto-push shall occur on (if true). Does nothing if auto-push is false'
         required: false
         default: ''
+
     check-host-name:
         description: 'Check if the current and previous benchmarks were run on the same machines. If set to true, the workflow fails if the check fails.'
         required: false
