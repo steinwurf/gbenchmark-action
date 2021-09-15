@@ -6,7 +6,7 @@ every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Major: Added the with-repetitions parameter.
 
 1.0.3
 -----
