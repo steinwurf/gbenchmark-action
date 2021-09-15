@@ -92,8 +92,16 @@ function findAlerts(
             }
         });
         if (prev === undefined) {
-            core.debug(`Skipped because benchmark '${current.name}' is not found in previous benchmarks`);
+            if (!withRepetitions){
+                core.debug(`Skipped because benchmark '${current.name}' is not found in previous benchmarks`);
+            }
+            else {
+                if (current.name.endsWith('_mean')) {
+                    core.debug(`Skipped because benchmark '${current.name}' is not found in previous benchmarks`);
+                }
+            }
             continue;
+
         }
 
         const ratio = biggerIsBetter()
