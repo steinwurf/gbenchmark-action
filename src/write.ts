@@ -82,6 +82,15 @@ function findAlerts(
     const names: string[] = [];
     for (const current of curSuite.benches) {
         const prev = prevSuite.benches.find((b) => {
+            if (withRepetitions) {
+                if (
+                    current.name.endsWith('_mean') ||
+                    current.name.endsWith('_median') ||
+                    current.name.endsWith('_stddev')
+                ) {
+                    return false;
+                }
+            }
             return b.name === current.name;
         });
 
