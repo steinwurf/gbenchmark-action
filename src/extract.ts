@@ -7,6 +7,7 @@ export interface BenchmarkResult {
     value: number;
     range?: string;
     unit: string;
+    repetitions: number;
     extra?: string;
 }
 
@@ -113,8 +114,9 @@ function extractGoogleCppResult(output: string): Extracted {
         const name = b.name;
         const value = b.real_time;
         const unit = b.time_unit + '/iter';
+        const repetitions = b.repetitions;
         const extra = `iterations: ${b.iterations}\ncpu: ${b.cpu_time} ${b.time_unit}\nthreads: ${b.threads}`;
-        return { name, value, unit, extra };
+        return { name, value, unit, repetitions, extra };
     });
     return { host_name: host_name, result: result };
 }

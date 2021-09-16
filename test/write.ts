@@ -192,11 +192,12 @@ describe('writeBenchmark()', function () {
         };
     }
 
-    function bench(name: string, value: number, range = '± 20', unit = 'ns/iter') {
+    function bench(name: string, value: number, repetitions: number, range = '± 20',  unit = 'ns/iter') {
         return {
             name,
             range,
             unit,
+            repetitions,
             value,
         };
     }
@@ -259,7 +260,7 @@ describe('writeBenchmark()', function () {
                                 host_name: 'dummy host',
                                 commit: commit('prev commit id'),
                                 date: lastUpdate - 1000,
-                                benches: [bench('bench_fib_10', 100)],
+                                benches: [bench('bench_fib_10', 0, 100)],
                             },
                         ],
                     },
@@ -268,7 +269,7 @@ describe('writeBenchmark()', function () {
                     host_name: 'dummy host',
                     commit: commit('current commit id'),
                     date: lastUpdate,
-                    benches: [bench('bench_fib_10', 210)], // Exceeds 2.0 threshold
+                    benches: [bench('bench_fib_10', 0, 210)], // Exceeds 2.0 threshold
                 },
                 error: [
                     '# :warning: **Performance Alert** :warning:',
@@ -492,7 +493,7 @@ describe('writeBenchmark()', function () {
                     host_name: 'dummy host',
                     commit: commit('current commit id'),
                     date: lastUpdate,
-                    benches: [bench('bench_fib_10', 135)],
+                    benches: [bench('bench_fib_10', 0, 135)],
                 },
                 gitHistory: gitHistory({ dir: 'with-index-html' }),
             },

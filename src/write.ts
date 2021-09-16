@@ -79,40 +79,68 @@ function findAlerts(
             `The current and previous benchmarks were not run on the same machine: ${curSuite.host_name} != ${prevSuite.host_name}`,
         );
     }
+    const names: string[] = [];
     for (const current of curSuite.benches) {
-        const prev = prevSuite.benches.find((b) => {
-            if (withRepetitions) {
-                if (b.name.endsWith('_mean')) {
-                    return b.name === current.name;
-                } else {
-                    return false;
-                }
-            } else {
-                return b.name === current.name;
-            }
-        });
-        if (prev === undefined) {
-            if (!withRepetitions){
-                core.debug(`Skipped because benchmark '${current.name}' is not found in previous benchmarks`);
-            }
-            else {
-                if (current.name.endsWith('_mean')) {
-                    core.debug(`Skipped because benchmark '${current.name}' is not found in previous benchmarks`);
-                }
-            }
+        if (names.includes(current.name)) {
             continue;
+        }
+        const prev = prevSuite.benches.find((b) => {
+            return b.name === current.name;
+        });
 
+        let curMin = 0;
+        let prevMin = 0;
+
+        if (prev === undefined) {
+            core.debug(`Skipped because benchmark '${current.name}' is not found in previous benchmarks`);
+            continue;
+        } else {
+            if (withRepetitions) {
+                names.push(current.name);
+                const curIndex = curSuite.benches.indexOf(current);
+                const prevIndex = prevSuite.benches.indexOf(prev);
+                const curRepetitions = current.repetitions;
+                const prevRepetitions = prev.repetitions;
+
+                const repeatedCurBenches = curSuite.benches.slice(curIndex, curIndex + curRepetitions);
+                const repeatedPrevBenches = prevSuite.benches.slice(prevIndex, prevIndex + prevRepetitions);
+
+                const curTimes: number[] = [];
+                const prevTimes: number[] = [];
+                for (let i = 0; i < curRepetitions + 1; i++) {
+                    curTimes.push(repeatedCurBenches[i].value);
+                }
+                for (let i = 0; i < prevRepetitions; i++) {
+                    prevTimes.push(repeatedPrevBenches[i].value);
+                }
+                curMin = Math.min(...curTimes);
+                prevMin = Math.min(...prevTimes);
+            }
+        }
+        let ratio = 0;
+        if (withRepetitions) {
+            ratio = biggerIsBetter()
+                ? prevMin / curMin // e.g. current=100, prev=200
+                : curMin / prevMin; // e.g. current=200, prev=100
+        } else {
+            ratio = biggerIsBetter()
+                ? prev.value / current.value // e.g. current=100, prev=200
+                : current.value / prev.value; // e.g. current=200, prev=100
         }
 
-        const ratio = biggerIsBetter()
-            ? prev.value / current.value // e.g. current=100, prev=200
-            : current.value / prev.value; // e.g. current=200, prev=100
-
         if (ratio > threshold) {
-            core.warning(
-                `Performance alert! Previous value was ${prev.value} and current value is ${current.value}.` +
-                    ` It is ${ratio}x worse than previous exceeding a ratio threshold ${threshold}`,
-            );
+            if (withRepetitions) {
+                core.warning(
+                    `Performance alert! Previous minimum value was ${prevMin} and current minimum value is ${curMin}.` +
+                        ` It is ${ratio}x worse than previous exceeding a ratio threshold ${threshold}`,
+                );
+            } else {
+                core.warning(
+                    `Performance alert! Previous value was ${prev.value} and current value is ${current.value}.` +
+                        ` It is ${ratio}x worse than previous exceeding a ratio threshold ${threshold}`,
+                );
+            }
+
             alerts.push({ current, prev, ratio });
         }
     }
