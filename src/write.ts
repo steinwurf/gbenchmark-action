@@ -116,22 +116,19 @@ function findAlerts(
             const curRepetitions = current.repetitions;
             const prevRepetitions = prev.repetitions;
 
-            const repeatedCurBenches = curSuite.benches.slice(curIndex, curIndex + curRepetitions);
-            const repeatedPrevBenches = prevSuite.benches.slice(prevIndex, prevIndex + prevRepetitions);
-
             const curTimes: number[] = [];
             const prevTimes: number[] = [];
-            for (let i = 0; i < curRepetitions + 1; i++) {
-                curTimes.push(repeatedCurBenches[i].value);
+            for (let i = curIndex; i < curIndex + curRepetitions; i++) {
+                curTimes.push(curSuite.benches[i].value);
             }
-            for (let i = 0; i < prevRepetitions; i++) {
-                prevTimes.push(repeatedPrevBenches[i].value);
+            for (let i = prevIndex; i < prevIndex + prevRepetitions; i++) {
+                prevTimes.push(prevSuite.benches[i].value);
             }
             curMin = Math.min(...curTimes);
             prevMin = Math.min(...prevTimes);
             const minIndices = [curTimes.indexOf(curMin), prevTimes.indexOf(prevMin)];
-            curMinIndex = curSuite.benches.indexOf(repeatedCurBenches[minIndices[0]]);
-            prevMinIndex = prevSuite.benches.indexOf(repeatedCurBenches[minIndices[0]]);
+            curMinIndex = curSuite.benches.indexOf(curSuite.benches[curIndex + minIndices[0]]);
+            prevMinIndex = prevSuite.benches.indexOf(prevSuite.benches[prevIndex + minIndices[0]]);
 
             ratio = biggerIsBetter()
                 ? prevMin / curMin // e.g. current=100, prev=200
