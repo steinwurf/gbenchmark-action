@@ -90,6 +90,8 @@ function findAlerts(
 
         let curMin = 0;
         let prevMin = 0;
+        let curMinIndex = 0;
+        let prevMinIndex = 0;
 
         if (prev === undefined) {
             core.debug(`Skipped because benchmark '${current.name}' is not found in previous benchmarks`);
@@ -115,6 +117,9 @@ function findAlerts(
                 }
                 curMin = Math.min(...curTimes);
                 prevMin = Math.min(...prevTimes);
+                const minIndices = [curTimes.indexOf(curMin), prevTimes.indexOf(prevMin)];
+                curMinIndex = curSuite.benches.indexOf(repeatedCurBenches[minIndices[0]]);
+                prevMinIndex = prevSuite.benches.indexOf(repeatedCurBenches[minIndices[0]]);
             }
         }
         let ratio = 0;
@@ -134,14 +139,16 @@ function findAlerts(
                     `Performance alert! Previous minimum value was ${prevMin} and current minimum value is ${curMin}.` +
                         ` It is ${ratio}x worse than previous exceeding a ratio threshold ${threshold}`,
                 );
+                const curMinBench = curSuite.benches[curMinIndex];
+                const prevMinBench = prevSuite.benches[prevMinIndex];
+                alerts.push({ current: curMinBench, prev: prevMinBench, ratio });
             } else {
                 core.warning(
                     `Performance alert! Previous value was ${prev.value} and current value is ${current.value}.` +
                         ` It is ${ratio}x worse than previous exceeding a ratio threshold ${threshold}`,
                 );
+                alerts.push({ current, prev, ratio });
             }
-
-            alerts.push({ current, prev, ratio });
         }
     }
 

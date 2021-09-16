@@ -192,7 +192,7 @@ describe('writeBenchmark()', function () {
         };
     }
 
-    function bench(name: string, value: number, repetitions: number, range = '± 20',  unit = 'ns/iter') {
+    function bench(name: string, value: number, repetitions: number, range = '± 20', unit = 'ns/iter') {
         return {
             name,
             range,
