@@ -81,60 +81,54 @@ function findAlerts(
     }
     const names: string[] = [];
     for (const current of curSuite.benches) {
-        if (names.includes(current.name)) {
-            continue;
-        }
         const prev = prevSuite.benches.find((b) => {
             return b.name === current.name;
         });
 
-        let curMin = 0;
-        let prevMin = 0;
-        let curMinIndex = 0;
-        let prevMinIndex = 0;
-
         if (prev === undefined) {
             core.debug(`Skipped because benchmark '${current.name}' is not found in previous benchmarks`);
             continue;
-        } else {
-            if (withRepetitions) {
-                names.push(current.name);
-                const curIndex = curSuite.benches.indexOf(current);
-                const prevIndex = prevSuite.benches.indexOf(prev);
-                const curRepetitions = current.repetitions;
-                const prevRepetitions = prev.repetitions;
-
-                const repeatedCurBenches = curSuite.benches.slice(curIndex, curIndex + curRepetitions);
-                const repeatedPrevBenches = prevSuite.benches.slice(prevIndex, prevIndex + prevRepetitions);
-
-                const curTimes: number[] = [];
-                const prevTimes: number[] = [];
-                for (let i = 0; i < curRepetitions + 1; i++) {
-                    curTimes.push(repeatedCurBenches[i].value);
-                }
-                for (let i = 0; i < prevRepetitions; i++) {
-                    prevTimes.push(repeatedPrevBenches[i].value);
-                }
-                curMin = Math.min(...curTimes);
-                prevMin = Math.min(...prevTimes);
-                const minIndices = [curTimes.indexOf(curMin), prevTimes.indexOf(prevMin)];
-                curMinIndex = curSuite.benches.indexOf(repeatedCurBenches[minIndices[0]]);
-                prevMinIndex = prevSuite.benches.indexOf(repeatedCurBenches[minIndices[0]]);
-            }
         }
         let ratio = 0;
+
         if (withRepetitions) {
+            if (names.includes(current.name)) {
+                continue;
+            }
+            let curMin = 0;
+            let prevMin = 0;
+            let curMinIndex = 0;
+            let prevMinIndex = 0;
+
+            core.debug('adding ' + current.name + ' to the list of names to ignore');
+            names.push(current.name);
+            const curIndex = curSuite.benches.indexOf(current);
+            const prevIndex = prevSuite.benches.indexOf(prev);
+            const curRepetitions = current.repetitions;
+            const prevRepetitions = prev.repetitions;
+
+            const repeatedCurBenches = curSuite.benches.slice(curIndex, curIndex + curRepetitions);
+            const repeatedPrevBenches = prevSuite.benches.slice(prevIndex, prevIndex + prevRepetitions);
+
+            const curTimes: number[] = [];
+            const prevTimes: number[] = [];
+            for (let i = 0; i < curRepetitions + 1; i++) {
+                curTimes.push(repeatedCurBenches[i].value);
+            }
+            for (let i = 0; i < prevRepetitions; i++) {
+                prevTimes.push(repeatedPrevBenches[i].value);
+            }
+            curMin = Math.min(...curTimes);
+            prevMin = Math.min(...prevTimes);
+            const minIndices = [curTimes.indexOf(curMin), prevTimes.indexOf(prevMin)];
+            curMinIndex = curSuite.benches.indexOf(repeatedCurBenches[minIndices[0]]);
+            prevMinIndex = prevSuite.benches.indexOf(repeatedCurBenches[minIndices[0]]);
+
             ratio = biggerIsBetter()
                 ? prevMin / curMin // e.g. current=100, prev=200
                 : curMin / prevMin; // e.g. current=200, prev=100
-        } else {
-            ratio = biggerIsBetter()
-                ? prev.value / current.value // e.g. current=100, prev=200
-                : current.value / prev.value; // e.g. current=200, prev=100
-        }
 
-        if (ratio > threshold) {
-            if (withRepetitions) {
+            if (ratio > threshold) {
                 core.warning(
                     `Performance alert! Previous minimum value was ${prevMin} and current minimum value is ${curMin}.` +
                         ` It is ${ratio}x worse than previous exceeding a ratio threshold ${threshold}`,
@@ -142,7 +136,13 @@ function findAlerts(
                 const curMinBench = curSuite.benches[curMinIndex];
                 const prevMinBench = prevSuite.benches[prevMinIndex];
                 alerts.push({ current: curMinBench, prev: prevMinBench, ratio });
-            } else {
+            }
+        } else {
+            ratio = biggerIsBetter()
+                ? prev.value / current.value // e.g. current=100, prev=200
+                : current.value / prev.value; // e.g. current=200, prev=100
+
+            if (ratio > threshold) {
                 core.warning(
                     `Performance alert! Previous value was ${prev.value} and current value is ${current.value}.` +
                         ` It is ${ratio}x worse than previous exceeding a ratio threshold ${threshold}`,
