@@ -8,7 +8,7 @@ name: Build, Lint and Test
   push:
     branches:
     - master
-  pull_request: null
+  pull_request:
 jobs:
   build:
     strategy:
